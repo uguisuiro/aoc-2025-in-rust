@@ -34,6 +34,7 @@ fn main() -> Result<()> {
         let mut state: i32 = 50;
         let mut cnt_zero: usize = 0;
         for rotate in reader.lines() {
+            // 1行読み取ってstrに格納する
             let str = rotate?.to_string();
             if str.starts_with("L") {
                 let current_rotate_circle = str.strip_prefix("L");
@@ -41,35 +42,21 @@ fn main() -> Result<()> {
                     Some(v) => current = v.parse().unwrap(),
                     None => println!("none value"),
                 };
-                current = current % 100;
-                state = state - current;
-
-                if state < 0 {
-                    state = state + 100;
-                    state = state.abs();
-                }
-                if state == 0 {
-                    cnt_zero = cnt_zero + 1;
-                }
+                current *= -1;
             } else {
                 let current_rotate_circle = str.strip_prefix("R");
                 match current_rotate_circle {
                     Some(v) => current = v.parse().unwrap(),
                     None => println!("none value"),
                 };
-                current = current % 100;
-                state = state + current;
-                if state >= 100 {
-                    state = state % 100;
-                }
-                if state == 0 {
-                    cnt_zero = cnt_zero + 1;
-                }
+            }
+            state = (state + current).rem_euclid(100);
+            
+            if state == 0 {
+                cnt_zero += 1;
             }
         }
-
-        let answer: usize = cnt_zero;
-        Ok(answer)
+        Ok(cnt_zero)
     }
 
     // テストケースの答えと一致するかを確認
